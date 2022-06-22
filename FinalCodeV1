@@ -1,0 +1,148 @@
+import java.util.Scanner;
+import java.util.HashSet;
+import java.util.*;
+import java.util.Random;
+
+class Main {
+  public static void main(String[] args) {
+    Scanner input = new Scanner(System.in);
+    System.out.println("Welcome to Wheel of Fortune!");
+    // List for money amounts every spin
+    List<Integer> prizes = new ArrayList<Integer>();
+    prizes.add(0);
+    prizes.add(-2);
+    int increase = 0;
+    for (int i = 0; i < 29; i++) {
+      prizes.add(100 + increase);
+      increase = increase + 50;
+    }
+    prizes.add(2000);
+    prizes.add(2500);
+    prizes.add(5000);
+
+    // List with all the phrases
+    List<String> phrases = new ArrayList<String>();
+    phrases.add("lionel messi");
+    phrases.add("cristiano ronaldo");
+    phrases.add("riyad mahrez");
+    phrases.add("michael phelps");
+    phrases.add("steph curry ");
+    phrases.add("lebron james");
+    phrases.add("lewis hamilton");
+    phrases.add("max verstappen");
+    phrases.add("wayne gretzky");
+    phrases.add("sidney crosby");
+    phrases.add("ksi");
+    phrases.add("mike tyson");
+    phrases.add("mohammed ali");
+    phrases.add("neymar");
+    phrases.add("alphonso davies");
+    phrases.add("jordyn huitema");
+    phrases.add("kylian mbappe");
+    phrases.add("alex ovechkin");
+    phrases.add("logan paul");
+    phrases.add("deji");
+    // end of name list
+
+    int round = 1;
+    int strike = 0;
+    int totalScore = 0;
+    
+    String randomName = getName(phrases);
+    String userGuess = " ";
+    System.out.println("\nRound: " + round);
+    List<String> guesses = new ArrayList<String>();
+    boolean complete = true;
+    while (complete){
+            complete = false;
+      int randomNumber = getPoints(prizes);
+      System.out.println("\n***********************");
+      for(char letter : randomName.toCharArray()) {
+        if(userGuess.indexOf(letter) == -1) {
+          System.out.print("-");
+          complete = true;
+        }
+        else {
+          System.out.print(letter);
+        }
+      }
+      if (! complete){
+        round++;
+        break;
+      }
+      System.out.println("\n***********************");
+      System.out.print(guesses);
+      if (randomNumber ==  0) {
+        strike++;
+        System.out.println("\nSpin: Lose a Life!");
+      }
+      else if (randomNumber == -2)  {
+        strike = strike + 3;
+        System.out.println("\nSpin: Bankrupt");
+        totalScore = totalScore - totalScore;
+        System.out.print("Final Score: " + totalScore);
+        break;
+      } 
+      else {
+        System.out.println("\nSpin: " + randomNumber);
+        System.out.print("Enter a letter: ");
+        String guess = input.nextLine();
+        if (guess.equals(randomName)) {
+          totalScore = totalScore + randomNumber;
+          System.out.println("You WIN!");
+          System.out.print("Final Score: " + totalScore);
+          break;
+        } 
+        else if(randomName.contains(guess)){
+          totalScore = totalScore + randomNumber;
+          userGuess += guess;
+          guesses.add(guess);
+          Collections.sort(guesses);
+        }
+        else{
+          userGuess += guess;
+          guesses.add(guess);
+          Collections.sort(guesses);
+        }
+      }
+      System.out.print("\n\nScore: " + totalScore);
+    }
+  }
+  public static int getPoints(List<Integer> a) {
+    Random r = new Random();
+    return a.get(r.nextInt(a.size()));
+  }
+
+  public static String getName(List<String> a) {
+    Random r = new Random();
+    return a.get(r.nextInt(a.size()));
+  }
+}
+
+/*
+private void displayRules() {
+		println("");
+		println("These are the rules for Wheel Of Fortune: Athelete Edition");
+		readLine("");
+		println("The object of this game is to get as much money as possible while guessing the word.");
+		println("Each turn, a player has the option of spinning the wheel, buying a vowel, or trying to solve the puzzle.");
+		println("");
+		readLine("");
+		println("If the player chooses to spin, the wheel spins until it lands on a column.");
+		println("If the wheel lands on bankrupt, the player's wallet is set to zero and the game will be over.");
+		println("Or, the player can then guess a letter. If the guess is correct, the letter is displayed on the board, and the player's balance increases by how much money you land on.");
+		println("If the guess is incorrect, the player loses a life. He has 3 lives the entire game");
+		println("");
+		readLine("");
+		println("If the player chooses to buy a vowel, the player's balance decreases by the cost to buy a vowel ($250), and the player can then pick a vowel to guess.");
+		println("If the player guesses correctly, the letter is displayed on the board. There is no reward for guessing vowels.");
+		println("If the player guesses incorrectly, the player will lose another life.");
+		println("");
+		readLine("");
+		println("If the player chooses to solve the puzzle, the player must type what they think the hidden phrase is.");
+		println("If the player guesses incorrectly, they lose a life.");
+		println("If the player guesses correctly, the player earns the prize. There wil be a new round");
+		println("");
+		readLine("");
+		println("");
+  */

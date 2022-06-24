@@ -1,0 +1,161 @@
+import java.util.Scanner;
+import java.util.HashSet;
+import java.util.*;
+import java.util.Random;
+
+class Main {
+  public static void main(String[] args) {
+    Scanner input = new Scanner(System.in);
+    System.out.println("Welcome to Wheel of Fortune!");
+    // List to add money amounts to a list
+    List<Integer> prizes = new ArrayList<Integer>();
+    prizes.add(0);
+    prizes.add(-2);
+    int increase = 0;
+    for (int i = 0; i < 29; i++) {
+      prizes.add(100 + increase);
+      increase = increase + 50;
+    }
+    prizes.add(2000);
+    prizes.add(2500);
+    prizes.add(5000);
+
+    // List with all the phrases
+    List<String> phrases = new ArrayList<String>();
+    phrases.add("lionel messi");
+    phrases.add("cristiano ronaldo");
+    phrases.add("riyad mahrez");
+    phrases.add("michael phelps");
+    phrases.add("steph curry ");
+    phrases.add("lebron james");
+    phrases.add("lewis hamilton");
+    phrases.add("max verstappen");
+    phrases.add("wayne gretzky");
+    phrases.add("sidney crosby");
+    phrases.add("ksi");
+    phrases.add("mike tyson");
+    phrases.add("mohammed ali");
+    phrases.add("neymar");
+    phrases.add("alphonso davies");
+    phrases.add("jordyn huitema");
+    phrases.add("kylian mbappe");
+    phrases.add("alex ovechkin");
+    phrases.add("logan paul");
+    phrases.add("deji");
+    // end of name list
+
+    boolean playAgain = true;
+    do{
+      //set variables that reset every run through of a game
+      int round = 1;
+      int strike = 0;
+      int totalScore = 0;
+      boolean playRound = true;
+      // while loop for every round
+      while(playRound){
+        // get a random name 
+        String randomName = getName(phrases);
+        // remove the chosen name so no duplicate rounds
+        phrases.remove(randomName);
+        String userGuess = " ";
+        System.out.println("\nRound: " + round);
+        // create a list that stores all users guesses
+        List<String> guesses = new ArrayList<String>();
+        boolean complete = true;
+        // a loop for each guess
+        while (complete){
+          // the loop turns false right away so it wont run again
+          complete = false;
+          // get a random money amount from the list
+          int randomNumber = getPoints(prizes);
+          System.out.println("\n***********************");
+          // for loop to check if the guess is in the code
+          for(char letter : randomName.toCharArray()) {
+            if(userGuess.indexOf(letter) == -1) {
+              // if the guess is not in the word runs the loop again
+              System.out.print("-");
+              complete = true;
+            }
+            else {
+              // otherwise the letter is printed
+              System.out.print(letter);
+            }
+          }
+          if (! complete){
+            // if the round is won based on individual guesses
+            System.out.println("\n***********************");
+            System.out.println("You guessed correctly!");
+            round++;
+            break;
+          }
+          System.out.println("\n***********************");
+          System.out.print(guesses);
+          // If lose a life is selected from money list
+          if (randomNumber ==  0) {
+            // add a strike
+            strike++;
+            System.out.println("\nSpin: Lose a Life!");
+            // 3 strikes means you go bankrupt and game ends
+            if(strike == 3){
+              System.out.println("You have lost all your lives!");
+              System.out.println("Final Score: $" + totalScore);
+              playRound = false;
+              break;
+            }
+          }
+          // bankrupt is chosen from the list
+          else if (randomNumber == -2)  {
+            strike = strike + 3;
+            System.out.println("\nSpin: Bankrupt");
+            totalScore = 0;
+            System.out.println("Final Score: $" + totalScore);
+            playRound = false;
+            break;
+          } 
+          else {
+            System.out.println("\nSpin: " + randomNumber);
+            System.out.print("Enter a letter (Buy a vowel for $250): ");
+            String guess = input.nextLine();
+            switch(guess){
+              case "a": case "e": case "o": case "u": case "i":
+                System.out.println("You have a bought a vowel");
+                totalScore = totalScore - 250;
+            }
+            if (guess.equals(randomName)) {
+              totalScore = totalScore + randomNumber;
+              System.out.println("You guessed correctly!");
+              System.out.println("Score: $" + totalScore);
+              round++;
+              break;
+            } 
+            else if(randomName.contains(guess)){
+              totalScore = totalScore + randomNumber;
+              userGuess += guess;
+              guesses.add(guess);
+              Collections.sort(guesses);
+            }
+            else{
+              userGuess += guess;
+              guesses.add(guess);
+              Collections.sort(guesses);
+            }
+          }
+          System.out.print("\n\nScore: $" + totalScore);
+        }      
+      }
+      System.out.print("Do you want to play again? (true/false): ");
+      playAgain = input.nextBoolean();
+    } while(playAgain);
+    System.out.print("Thank you for playing!");
+  }
+
+  public static int getPoints(List<Integer> a) {
+    Random r = new Random();
+    return a.get(r.nextInt(a.size()));
+  }
+
+  public static String getName(List<String> a) {
+    Random r = new Random();
+    return a.get(r.nextInt(a.size()));
+  }
+}
